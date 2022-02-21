@@ -5,11 +5,11 @@ logFn = "/tmp/log.txt"
 const axios = require('axios')
 const Tail = require('tail').Tail;
 
-async function call(dest) {
-	await axios.get(dest)
-	console.log('fatto')
+async function stress(dest) {
+	while(true){
+		await axios.get(dest)
+	}
 }
-
 
 var tail = new Tail(logFn);
 tail.watch()
@@ -20,7 +20,8 @@ tail.on("line", ln => {
 	rtMs = parseFloat(rtStr);
 	whenStr = parts[2].substr(5, parts[2].length - 5);
 	whenMs = Date.parse(whenStr);
-	console.log([entryName, rtMs, whenMs]);
+	logline = {'entry':entryName, 'rtMs':rtMs, 'whenMs':whenMs}
+	console.log(JSON.stringify(logline));
 });
 
-call('http://localhost:8080/')
+stress('http://localhost:8080/')
